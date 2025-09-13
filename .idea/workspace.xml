@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e1c83fa-24e9-4959-aeaf-acce3504d8a8" name="Changes" comment="追加软件说明">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="7e1c83fa-24e9-4959-aeaf-acce3504d8a8" name="Changes" comment="feat: 重大更新v0.01 - 年龄系统+存档功能+出身背景&#10;&#10;新增5种出身、时间流逝、存档读档、可视化面板等20+项功能&#10;优化UI设计、战斗系统、响应式布局，提升整体游戏体验" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,7 +117,7 @@
       <updated>1757742700743</updated>
       <workItem from="1757742703400" duration="3554000" />
       <workItem from="1757757192060" duration="3290000" />
-      <workItem from="1757765365290" duration="2833000" />
+      <workItem from="1757765365290" duration="3164000" />
     </task>
     <task id="LOCAL-00001" summary="V0.01 初始创建MVP 版本 可运行">
       <option name="closed" value="true" />
@@ -139,7 +135,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757759615003</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="feat: 重大更新v0.01 - 年龄系统+存档功能+出身背景&#10;&#10;新增5种出身、时间流逝、存档读档、可视化面板等20+项功能&#10;优化UI设计、战斗系统、响应式布局，提升整体游戏体验">
+      <option name="closed" value="true" />
+      <created>1757768562662</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1757768562662</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -148,7 +152,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="V0.01 初始创建MVP 版本 可运行" />
     <MESSAGE value="追加软件说明" />
-    <option name="LAST_COMMIT_MESSAGE" value="追加软件说明" />
+    <MESSAGE value="feat: 重大更新v0.01 - 年龄系统+存档功能+出身背景&#10;&#10;新增5种出身、时间流逝、存档读档、可视化面板等20+项功能&#10;优化UI设计、战斗系统、响应式布局，提升整体游戏体验" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 重大更新v0.01 - 年龄系统+存档功能+出身背景&#10;&#10;新增5种出身、时间流逝、存档读档、可视化面板等20+项功能&#10;优化UI设计、战斗系统、响应式布局，提升整体游戏体验" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/wuxia_textgame_mvp$app.coverage" NAME="app Coverage Results" MODIFIED="1757767559167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
