@@ -9,8 +9,8 @@ game_api = Blueprint('game_api', __name__)
 
 # 初始化服务
 game_data = GameData()
-exploration_service = ExplorationService(game_data)
 battle_service = BattleService(game_data)
+exploration_service = ExplorationService(game_data, battle_service)
 
 
 @game_api.route('/explore', methods=['POST'])

@@ -942,7 +942,10 @@
                     return;
                 }
 
-                addToLog(data.message);
+                // 显示战斗日志
+                if (data.battle_log && data.battle_log.length > 0) {
+                    data.battle_log.forEach(log => addToLog(log));
+                }
 
                 if (data.fled) {
                     gameState = 'exploring';

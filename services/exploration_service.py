@@ -2,8 +2,9 @@ import random
 
 
 class ExplorationService:
-    def __init__(self, game_data):
+    def __init__(self, game_data, battle_service=None):
         self.game_data = game_data
+        self.battle_service = battle_service
 
     def explore(self, player):
         """处理探索事件"""
@@ -24,16 +25,28 @@ class ExplorationService:
                 f"[{time_str}] 岁月如流水，你已经{age_result['new_age']}岁了。随着年龄的增长，你的实力也在发生变化...")
 
         if event_type == 'enemy':
-            enemy_key = random.choice(list(self.game_data.enemies.keys()))
-            enemy = self.game_data.enemies[enemy_key].copy()
-            
-            messages.append(f"[{time_str}] 你遇到了{enemy['name']}！")
+            if self.battle_service:
+                # 使用 battle_service 的 start_battle 方法来处理敌人生成和 session 存储
+                enemy = self.battle_service.start_battle(player)
+                messages.append(f"[{time_str}] 你遇到了{enemy['name']}！")
+                
+                return {
+                    'type': 'enemy',
+                    'messages': messages,
+                    'enemy': enemy
+                }
+            else:
+                # 如果没有 battle_service，使用原来的逻辑（向后兼容）
+                enemy_key = random.choice(list(self.game_data.enemies.keys()))
+                enemy = self.game_data.enemies[enemy_key].copy()
+                
+                messages.append(f"[{time_str}] 你遇到了{enemy['name']}！")
 
-            return {
-                'type': 'enemy',
-                'messages': messages,
-                'enemy': enemy
-            }
+                return {
+                    'type': 'enemy',
+                    'messages': messages,
+                    'enemy': enemy
+                }
 
         elif event_type == 'treasure':
             gold_found = random.randint(5, 20)
