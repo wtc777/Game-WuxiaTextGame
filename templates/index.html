@@ -688,14 +688,22 @@
                     const section = document.getElementById('load-game-section');
                     const info = document.getElementById('save-info');
 
-                    const saveTime = new Date(data.save_info.timestamp).toLocaleString('zh-CN');
-                    info.innerHTML = `
-                        <strong>角色:</strong> ${data.save_info.name}<br>
-                        <strong>等级:</strong> ${data.save_info.level} 级<br>
-                        <strong>年龄:</strong> ${data.save_info.age} 岁<br>
-                        <strong>保存时间:</strong> ${saveTime}
-                    `;
+                    // 显示存档列表
+                    let savesHtml = '';
+                    data.save_list.forEach((save, index) => {
+                        const saveTime = new Date(save.timestamp).toLocaleString('zh-CN');
+                        savesHtml += `
+                            <div class="save-item" style="margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                                <strong>存档 ${index + 1}:</strong> ${save.save_name}<br>
+                                <strong>角色:</strong> ${save.name}<br>
+                                <strong>等级:</strong> ${save.level} 级<br>
+                                <strong>年龄:</strong> ${save.age} 岁<br>
+                                <strong>保存时间:</strong> ${saveTime}
+                            </div>
+                        `;
+                    });
 
+                    info.innerHTML = savesHtml;
                     section.classList.remove('hidden');
                 }
             } catch (error) {

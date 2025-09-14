@@ -29,7 +29,7 @@ class ExplorationService:
                 # 使用 battle_service 的 start_battle 方法来处理敌人生成和 session 存储
                 enemy = self.battle_service.start_battle(player)
                 messages.append(f"[{time_str}] 你遇到了{enemy['name']}！")
-                
+
                 return {
                     'type': 'enemy',
                     'messages': messages,
@@ -39,7 +39,7 @@ class ExplorationService:
                 # 如果没有 battle_service，使用原来的逻辑（向后兼容）
                 enemy_key = random.choice(list(self.game_data.enemies.keys()))
                 enemy = self.game_data.enemies[enemy_key].copy()
-                
+
                 messages.append(f"[{time_str}] 你遇到了{enemy['name']}！")
 
                 return {

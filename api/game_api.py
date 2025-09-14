@@ -86,7 +86,7 @@ def save_game():
         from utils.database import DatabaseManager
         db_manager = DatabaseManager()
         db_manager.save_game(player)
-        
+
         return jsonify({
             'success': True,
             'message': '游戏保存成功！'
@@ -99,12 +99,12 @@ def save_game():
 def load_game():
     from utils.database import DatabaseManager
     db_manager = DatabaseManager()
-    
+
     # 从session获取玩家名称
     if 'player_data' in session:
         player_name = session['player_data']['name']
         save_data = db_manager.load_game(player_name)
-        
+
         if save_data:
             session['player_data'] = save_data['player']
             return jsonify({
@@ -112,7 +112,7 @@ def load_game():
                 'message': f'游戏读取成功！存档时间：{save_data["timestamp"]}',
                 'player': save_data['player']
             })
-    
+
     return jsonify({'error': '没有找到存档'})
 
 
@@ -120,16 +120,31 @@ def load_game():
 def get_save_info():
     from utils.database import DatabaseManager
     db_manager = DatabaseManager()
-    
+
     # 从session获取玩家名称
     if 'player_data' in session:
         player_name = session['player_data']['name']
-        save_info = db_manager.get_save_info(player_name)
-        
-        if save_info:
-            return jsonify({
-                'has_save': True,
-                'save_info': save_info
-            })
-    
+        save_info_list = db_manager.get_save_info(player_name)
+
+        if save_info_list and len(save_info_list) > 0:
+            # 加载玩家数据以获取基本信息
+            player = db_manager.load_player(player_name)
+            if player:
+                # 为每个存档创建详细信息
+                save_list = []
+                for save_info in save_info_list:
+                    save_detail = {
+                        'save_name': save_info['save_name'],
+                        'name': player.name,
+                        'level': player.level,
+                        'age': player.age,
+                        'timestamp': save_info['created_at']
+                    }
+                    save_list.append(save_detail)
+
+                return jsonify({
+                    'has_save': True,
+                    'save_list': save_list
+                })
+
     return jsonify({'has_save': False})
