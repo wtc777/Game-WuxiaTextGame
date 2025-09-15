@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e1c83fa-24e9-4959-aeaf-acce3504d8a8" name="Changes" comment="重构后 已修正 并且初步确认可运行 修复了战斗系统 战斗与逃跑问题">
+    <list default="true" id="7e1c83fa-24e9-4959-aeaf-acce3504d8a8" name="Changes" comment="修改了存档显示的信息异常的问题">
+      <change afterPath="$PROJECT_DIR$/services/event_generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/game_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/game_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/battle_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/battle_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/exploration_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/exploration_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,28 +61,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mainTest.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/PycharmProjects/tc_wang/Games/wuxia-textgame-mvp&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;http.proxy&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.app.executor": "Run",
+    "Python.mainTest.executor": "Run",
+    "Python.run.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/PycharmProjects/tc_wang/Games/wuxia-textgame-mvp/services",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "http.proxy",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\tc_wang\Games\wuxia-textgame-mvp\services" />
       <recent name="D:\PycharmProjects\tc_wang\Games\wuxia-textgame-mvp" />
       <recent name="D:\PycharmProjects\tc_wang\Games\wuxia-textgame-mvp\templates" />
       <recent name="D:\PycharmProjects\tc_wang\Games\wuxia-textgame-mvp\frontend" />
@@ -136,7 +140,8 @@
       <workItem from="1757765365290" duration="8787000" />
       <workItem from="1757775064894" duration="2565000" />
       <workItem from="1757843143132" duration="20000" />
-      <workItem from="1757845365707" duration="6471000" />
+      <workItem from="1757845365707" duration="6634000" />
+      <workItem from="1757948070090" duration="2680000" />
     </task>
     <task id="LOCAL-00001" summary="V0.01 初始创建MVP 版本 可运行">
       <option name="closed" value="true" />
@@ -186,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757853718258</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="修改了存档显示的信息异常的问题">
+      <option name="closed" value="true" />
+      <created>1757854622372</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1757854622373</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,11 +212,12 @@
     <MESSAGE value="更新readme 追加游戏界面描述" />
     <MESSAGE value="代码重构 分模块" />
     <MESSAGE value="重构后 已修正 并且初步确认可运行 修复了战斗系统 战斗与逃跑问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="重构后 已修正 并且初步确认可运行 修复了战斗系统 战斗与逃跑问题" />
+    <MESSAGE value="修改了存档显示的信息异常的问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改了存档显示的信息异常的问题" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/wuxia_textgame_mvp$run.coverage" NAME="run Coverage Results" MODIFIED="1757777958376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/wuxia_textgame_mvp$mainTest.coverage" NAME="mainTest Coverage Results" MODIFIED="1757772740119" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/wuxia_textgame_mvp$app.coverage" NAME="app Coverage Results" MODIFIED="1757854210239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/wuxia_textgame_mvp$app.coverage" NAME="app Coverage Results" MODIFIED="1757952662822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

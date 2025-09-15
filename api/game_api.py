@@ -3,7 +3,7 @@ from models.player import get_player, save_player
 from services.exploration_service import ExplorationService
 from services.battle_service import BattleService
 from models.game_data import GameData
-
+import random
 # 创建蓝图
 game_api = Blueprint('game_api', __name__)
 

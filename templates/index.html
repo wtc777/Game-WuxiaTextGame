@@ -1,1159 +1,600 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>武侠文字冒险游戏</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .game-title {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            color: #ffd700;
-        }
-
-        .game-panel {
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* 角色创建界面 */
-        .character-creation {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            font-size: 16px;
-            margin: 0 auto;
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .background-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .background-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .background-card:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-        }
-
-        .background-card.selected {
-            border-color: #ffd700;
-            background: rgba(255, 215, 0, 0.2);
-        }
-
-        .background-name {
-            font-weight: bold;
-            color: #ffd700;
-            margin-bottom: 5px;
-        }
-
-        .background-desc {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 10px;
-        }
-
-        .background-stats {
-            font-size: 12px;
-            color: #90ee90;
-        }
-
-        /* 游戏界面 */
-        .game-interface {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 20px;
-        }
-
-        .main-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* 角色状态面板 */
-        .player-stats {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .player-header {
-            text-align: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 10px;
-        }
-
-        .player-name {
-            font-size: 1.5em;
-            color: #ffd700;
-            font-weight: bold;
-        }
-
-        .player-title {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-            margin-top: 5px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .stat-item {
-            background: rgba(0,0,0,0.3);
-            padding: 8px;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .stat-label {
-            color: #ffd700;
-            font-size: 12px;
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .stat-value {
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        /* 生命值和经验条 */
-        .progress-bars {
-            margin-top: 15px;
-        }
-
-        .progress-item {
-            margin-bottom: 10px;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            transition: width 0.5s ease;
-            border-radius: 10px;
-        }
-
-        .hp-fill {
-            background: linear-gradient(90deg, #ff4757 0%, #ff6b7a 100%);
-        }
-
-        .exp-fill {
-            background: linear-gradient(90deg, #3742fa 0%, #70a1ff 100%);
-        }
-
-        /* 时间和年龄信息 */
-        .time-info {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .game-time {
-            color: #ffd700;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .player-age {
-            color: #90ee90;
-            font-size: 14px;
-        }
-
-        /* 按钮样式 */
-        .btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: #fff;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin: 5px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
-        }
-
-        /* 敌人信息面板 */
-        .enemy-info {
-            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 2px solid rgba(255,0,0,0.3);
-        }
-
-        .enemy-header {
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .enemy-stats {
-            display: flex;
-            justify-content: space-around;
-            text-align: center;
-        }
-
-        /* 游戏日志 */
-        .game-log {
-            height: 300px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.5);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .log-entry {
-            margin-bottom: 12px;
-            padding: 8px;
-            border-left: 3px solid #ffd700;
-            padding-left: 12px;
-            line-height: 1.4;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .log-time {
-            color: #90ee90;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        /* 商店界面 */
-        .shop-item {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .shop-item:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .weapon-info {
-            flex-grow: 1;
-        }
-
-        .weapon-name {
-            font-weight: bold;
-            color: #ffd700;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .weapon-desc {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 8px;
-        }
-
-        .weapon-stats {
-            display: flex;
-            gap: 15px;
-            font-size: 13px;
-        }
-
-        .weapon-attack {
-            color: #ff6b7a;
-            font-weight: bold;
-        }
-
-        .weapon-price {
-            color: #ffd700;
-            font-weight: bold;
-        }
-
-        /* 存档界面 */
-        .save-panel {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .save-info {
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        /* 动作按钮区域 */
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .battle-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        /* 隐藏类 */
-        .hidden {
-            display: none !important;
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .game-interface {
-                grid-template-columns: 1fr;
-            }
-
-            .background-options {
-                grid-template-columns: 1fr;
-            }
-
-            .actions {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 200px;
-            }
-        }
-
-        /* 动画效果 */
-        .level-up {
-            animation: levelUpGlow 2s ease-in-out;
-        }
-
-        @keyframes levelUpGlow {
-            0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
-        }
-
-        .damage-animation {
-            animation: damageShake 0.5s ease-in-out;
-        }
-
-        @keyframes damageShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>江湖见：武侠文字冒险</title>
+  <!-- Google Fonts for Chinese serif style -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#161616;
+      --paper:#f5f1e6;
+      --gold:#c7a86a;
+      --jade:#2f6f5e;
+      --crimson:#8e2d2b;
+      --smoke:rgba(0,0,0,.45);
+      --ink-2:#222;
+      --paper-2:#efe9da;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Noto Serif SC",serif;
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(1000px 700px at 90% 0%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(180deg,#0c1118,#171a20 60%, #1d2127);
+      color:#eee;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px 16px 64px;
+      position:relative;
+    }
+    /* Header */
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      margin:8px 0 20px;
+      position:relative;
+    }
+    .seal{
+      width:64px;height:64px;border-radius:12px;
+      background:linear-gradient(145deg,#b73730,#801f1c);
+      box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 2px 0 rgba(255,255,255,.15);
+      display:grid;place-items:center;
+      color:#f7e5cf;
+      font-weight:700;
+      letter-spacing:.2em;
+    }
+    .title{
+      font-size: clamp(26px, 4.6vw, 44px);
+      line-height:1.1;
+      letter-spacing:.06em;
+      text-shadow:0 1px 0 #000, 0 10px 40px rgba(0,0,0,.45);
+    }
+    .subtitle{
+      text-align:center;
+      color:#c7c7c7;
+      margin-top:4px;
+      font-size:14px;
+      letter-spacing:.12em;
+    }
+
+    /* Scroll panel (paper texture) */
+    .scroll{
+      border:1px solid rgba(199,168,106,.25);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), transparent 30%),
+        repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 1px, transparent 1px 12px),
+        radial-gradient(1100px 400px at 50% -50%, rgba(255,255,255,.08), transparent 40%),
+        linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,0) 55%),
+        linear-gradient(0deg, #fff0 0%, #fff0 75%, rgba(255,255,255,.04) 100%);
+      background-color:#14161b;
+      border-radius:14px;
+      padding:18px;
+      box-shadow:
+        0 20px 40px rgba(0,0,0,.35),
+        inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    .scroll--accent{ border-color: rgba(143, 114, 66, .45); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:18px;
+    }
+    @media (max-width: 920px){
+      .grid{ grid-template-columns:1fr; }
+    }
+
+    /* Sidebar (player card) */
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.0));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:14px;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .card h3{
+      margin:0 0 10px;
+      font-size:18px;
+      color:var(--gold);
+      letter-spacing:.2em;
+    }
+    .row{display:flex; gap:8px; align-items:center; justify-content:space-between; margin:6px 0;}
+    .label{color:#cbbfa5; font-size:13px; letter-spacing:.08em;}
+    .value{font-weight:700; color:#f2e9d8;}
+    .bar{height:12px; background:#2a2e35; border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.06)}
+    .bar>span{display:block;height:100%; background:linear-gradient(90deg,#b23a33,#de9b43);}
+
+    /* Buttons */
+    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px}
+    .btn{
+      border:none; cursor:pointer;
+      background:linear-gradient(145deg, rgba(199,168,106,.9), rgba(118,93,45,.95));
+      color:#1a1712; font-weight:700; letter-spacing:.1em;
+      padding:10px 16px; border-radius:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.3);
+      transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .btn:hover{ transform:translateY(-2px); filter:brightness(1.04) }
+    .btn:active{ transform:translateY(0) scale(.98) }
+    .btn--ghost{
+      background:transparent; color:#e9d9b6;
+      border:1px solid rgba(199,168,106,.45);
+      box-shadow:none;
+    }
+    .btn--danger{
+      background:linear-gradient(145deg, #b33d3a, #6f1f1c);
+      color:#f3e3d2;
+    }
+    .btn--jade{
+      background:linear-gradient(145deg, #3d8c78, #1c4e44);
+      color:#e6fff6;
+    }
+
+    /* Background cards for backgrounds selection */
+    .bg-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    .bg-card{
+      padding:12px;
+      border-radius:12px;
+      background:linear-gradient(160deg, rgba(255,255,255,.03), rgba(255,255,255,.0));
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;
+      transition:transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      min-height:140px;
+    }
+    .bg-card:hover{ transform:translateY(-3px); border-color: rgba(199,168,106,.45);}
+    .bg-card.active{ border-color: var(--gold); box-shadow:0 8px 22px rgba(0,0,0,.28) }
+    .bg-name{ color:var(--gold); font-weight:700; margin-bottom:6px; letter-spacing:.12em}
+    .bg-desc{ color:#d7d1c5; font-size:13px; line-height:1.45 }
+    .bg-stats{ margin-top:8px; color:#9ad0b5; font-size:12px }
+
+    /* Log (scroll look) */
+    .log{
+      height:320px; overflow:auto; padding:12px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.018), rgba(255,255,255,.0)),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 24px);
+      border:1px dashed rgba(199,168,106,.35);
+      border-radius:12px;
+    }
+    .log p{
+      margin:0 0 10px; padding-left:10px; border-left:3px solid rgba(199,168,106,.6);
+      color:#efe9da; line-height:1.6;
+    }
+
+    /* Enemy panel */
+    .enemy{
+      border:1px solid rgba(168,58,58,.65);
+      background:linear-gradient(180deg, rgba(142,45,43,.25), rgba(20,0,0,.08));
+      padding:12px; border-radius:12px; margin-top:10px;
+    }
+    .enemy h4{ margin:0 0 8px; color:#f2c9c7; letter-spacing:.16em}
+
+    /* Hidden */
+    .hidden{ display:none !important; }
+
+    /* Footer */
+    .footer{
+      margin-top:18px; text-align:center; color:#bfb8a7; font-size:12px;
+      letter-spacing:.16em;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="game-title">🗡️ 武侠文字冒险游戏 🏮</h1>
-
-        <!-- 角色创建界面 -->
-        <div id="character-creation" class="game-panel character-creation">
-            <h2>创建你的武侠角色</h2>
-
-            <div class="form-group">
-                <label for="character-name">角色姓名：</label>
-                <input type="text" id="character-name" placeholder="输入你的姓名">
-            </div>
-
-            <div class="form-group">
-                <label for="martial-art">选择武学流派：</label>
-                <select id="martial-art">
-                    <option value="剑宗">剑宗 - 以剑为主，攻击犀利</option>
-                    <option value="拳法">拳法 - 肉身格斗，刚猛有力</option>
-                    <option value="内功">内功 - 注重内力，防御较强</option>
-                    <option value="轻功">轻功 - 身法敏捷，速度较快</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>选择你的出身：</label>
-                <div id="background-options" class="background-options">
-                    <!-- 出身选项将通过JavaScript动态加载 -->
-                </div>
-            </div>
-
-            <button class="btn btn-primary" onclick="createCharacter()">开始冒险</button>
-
-            <!-- 存档读取 -->
-            <div id="load-game-section" class="save-panel hidden">
-                <h3>发现存档</h3>
-                <div id="save-info" class="save-info"></div>
-                <button class="btn btn-success" onclick="loadGame()">读取存档</button>
-            </div>
-        </div>
-
-        <!-- 游戏主界面 -->
-        <div id="game-interface" class="game-interface hidden">
-            <!-- 侧边栏 -->
-            <div class="sidebar">
-                <!-- 角色状态面板 -->
-                <div class="player-stats">
-                    <div class="player-header">
-                        <div class="player-name" id="player-name">-</div>
-                        <div class="player-title" id="player-title">-</div>
-                    </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-label">等级</span>
-                            <span class="stat-value" id="player-level">-</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">年龄</span>
-                            <span class="stat-value" id="player-age">-</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">攻击力</span>
-                            <span class="stat-value" id="player-attack">-</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">金币</span>
-                            <span class="stat-value" id="player-gold">-</span>
-                        </div>
-                        <div class="stat-item" style="grid-column: 1 / -1;">
-                            <span class="stat-label">武器</span>
-                            <span class="stat-value" id="player-weapon">-</span>
-                        </div>
-                    </div>
-
-                    <div class="progress-bars">
-                        <div class="progress-item">
-                            <div class="progress-label">
-                                <span>生命值</span>
-                                <span id="hp-text">100/100</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill hp-fill" id="hp-bar" style="width: 100%"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-label">
-                                <span>经验值</span>
-                                <span id="exp-text">0/50</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill exp-fill" id="exp-bar" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="time-info">
-                        <div class="game-time" id="game-time">武林历1年1月1日</div>
-                        <div class="player-age" id="age-description">正值青春年华</div>
-                    </div>
-                </div>
-
-                <!-- 存档功能 -->
-                <div class="save-panel">
-                    <h3>游戏存档</h3>
-                    <button class="btn btn-success" onclick="saveGame()">💾 保存游戏</button>
-                    <button class="btn btn-primary" onclick="loadGame()">📁 读取存档</button>
-                </div>
-            </div>
-
-            <!-- 主内容区域 -->
-            <div class="main-content">
-                <!-- 敌人信息面板 -->
-                <div id="enemy-panel" class="enemy-info hidden">
-                    <div class="enemy-header">
-                        ⚔️ 战斗中 - <span id="enemy-name">敌人名称</span>
-                    </div>
-                    <div class="enemy-stats">
-                        <div>
-                            <div class="stat-label">生命值</div>
-                            <div class="stat-value" id="enemy-hp">0</div>
-                        </div>
-                        <div>
-                            <div class="stat-label">攻击力</div>
-                            <div class="stat-value" id="enemy-attack">0</div>
-                        </div>
-                    </div>
-
-                    <div class="battle-actions" id="battle-actions">
-                        <button class="btn btn-danger" onclick="attack()">⚔️ 攻击</button>
-                        <button class="btn" onclick="flee()">🏃 逃跑</button>
-                    </div>
-                </div>
-
-                <!-- 游戏日志 -->
-                <div class="game-panel">
-                    <h3>📜 冒险日志</h3>
-                    <div id="game-log" class="game-log">
-                        <div class="log-entry">欢迎来到武侠世界！开始你的冒险之旅吧！</div>
-                    </div>
-                </div>
-
-                <!-- 商店界面 -->
-                <div id="shop-panel" class="game-panel hidden">
-                    <h3>🏪 武器商店</h3>
-                    <div id="shop-items"></div>
-                </div>
-
-                <!-- 操作按钮 -->
-                <div class="game-panel">
-                    <div class="actions">
-                        <button class="btn" onclick="explore()">🗺️ 探索</button>
-                        <button class="btn" onclick="rest()">💤 休息 (10金币)</button>
-                        <button class="btn" onclick="toggleShop()">🏪 商店</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <div class="seal">江湖</div>
+      <div>
+        <div class="title">江湖见 · 武侠文字冒险</div>
+        <div class="subtitle">—— 剑胆琴心，行走九州 ——</div>
+      </div>
     </div>
 
-    <script>
-        let gameState = 'character-creation';
-        let currentEnemy = null;
-        let selectedBackground = 'commoner';
-        let backgrounds = {};
+    <!-- Character Create Panel -->
+    <section id="panel-create" class="scroll scroll--accent">
+      <h2 style="margin:0; color:var(--gold); letter-spacing:.22em; font-size:18px;">开篇 · 立名与出身</h2>
+      <div class="grid" style="margin-top:12px">
+        <div class="card">
+          <h3>角色信息</h3>
+          <div class="row">
+            <span class="label">名号</span>
+            <input id="ipt-name" placeholder="请输入江湖名号" style="flex:1; margin-left:10px;
+              background:#0f1217; border:1px solid rgba(255,255,255,.08); color:#efe9da; padding:10px 12px; border-radius:10px; font-family:inherit">
+          </div>
+          <div class="row">
+            <span class="label">流派</span>
+            <select id="sel-art" style="flex:1; margin-left:10px;
+              background:#0f1217; border:1px solid rgba(255,255,255,.08); color:#efe9da; padding:10px 12px; border-radius:10px; font-family:inherit">
+              <option value="剑宗">剑宗 - 攻势凌厉</option>
+              <option value="拳法">拳法 - 刚猛狠准</option>
+              <option value="内功">内功 - 刚柔并济</option>
+              <option value="轻功">轻功 - 身法绝伦</option>
+            </select>
+          </div>
+          <div class="actions">
+            <button class="btn" id="btn-create">出 发</button>
+            <button class="btn btn--ghost hidden" id="btn-load">读取存档</button>
+          </div>
+          <div id="save-brief" class="footer hidden"></div>
+        </div>
 
-        window.onload = function() {
-            loadBackgrounds();
-            checkSavedGame();
+        <div>
+          <div style="color:#cbbfa5;letter-spacing:.16em; margin-bottom:6px;">选择出身</div>
+          <div id="bg-grid" class="bg-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Game Panel -->
+    <section id="panel-game" class="scroll hidden" style="margin-top:14px">
+      <div class="grid">
+        <!-- Sidebar -->
+        <div class="card" id="sidebar">
+          <h3>行囊与修为</h3>
+          <div class="row"><span class="label">名号</span><span class="value" id="pv-name">-</span></div>
+          <div class="row"><span class="label">出身·流派</span><span class="value" id="pv-title">-</span></div>
+          <div class="row"><span class="label">等级</span><span class="value" id="pv-lv">-</span></div>
+          <div class="row"><span class="label">年龄</span><span class="value" id="pv-age">-</span></div>
+          <div class="row"><span class="label">攻击</span><span class="value" id="pv-atk">-</span></div>
+          <div class="row"><span class="label">金币</span><span class="value" id="pv-gold">-</span></div>
+          <div class="row"><span class="label">武器</span><span class="value" id="pv-weapon">-</span></div>
+
+          <div style="margin-top:10px" class="row">
+            <div class="bar" style="width:100%"><span id="bar-hp" style="width:100%"></span></div>
+          </div>
+          <div class="row"><span class="label">生命</span><span class="value" id="pv-hp">0/0</span></div>
+
+          <div style="margin-top:6px" class="row">
+            <div class="bar" style="width:100%"><span id="bar-exp" style="width:0%"></span></div>
+          </div>
+          <div class="row"><span class="label">经验</span><span class="value" id="pv-exp">0/0</span></div>
+
+          <div class="row" style="margin-top:8px"><span class="label">武林历</span><span class="value" id="pv-time">-</span></div>
+
+          <div class="actions" style="margin-top:12px">
+            <button class="btn btn--jade" id="btn-save">保存</button>
+            <button class="btn btn--ghost" id="btn-load2">读取</button>
+          </div>
+        </div>
+
+        <!-- Main -->
+        <div>
+          <div class="row" style="justify-content:flex-start; gap:10px; margin-bottom:10px">
+            <button class="btn" id="btn-explore">行走江湖</button>
+            <button class="btn" id="btn-rest">歇脚(10金)</button>
+            <button class="btn" id="btn-shop">兵器铺</button>
+          </div>
+
+          <div>
+            <div style="color:#cbbfa5;letter-spacing:.2em; margin:6px 0 8px;">冒险日志 · 纸上江湖</div>
+            <div id="log" class="log">
+              <p>初入江湖，且看风云如何起。</p>
+            </div>
+          </div>
+
+          <!-- Enemy Panel -->
+          <div id="enemy" class="enemy hidden">
+            <h4>⚔ 战斗中 · <span id="enm-name">-</span></h4>
+            <div class="row"><span class="label">生命</span><span class="value" id="enm-hp">-</span></div>
+            <div class="row"><span class="label">攻击</span><span class="value" id="enm-atk">-</span></div>
+            <div class="actions">
+              <button class="btn btn--danger" id="btn-attack">出剑</button>
+              <button class="btn btn--ghost" id="btn-flee">脱身</button>
+            </div>
+          </div>
+
+          <!-- Shop Panel -->
+          <div id="shop" class="card hidden" style="margin-top:12px">
+            <h3>兵器铺</h3>
+            <div id="shop-items"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">© 江湖见 · 武侠文字冒险</div>
+  </div>
+
+  <script>
+    // --- State ---
+    let gameState = "create";
+    let selectedBg = "commoner";
+    let bgMap = {};
+    let inBattle = false;
+
+    const el = (id)=>document.getElementById(id);
+    const show = (n)=>el(n).classList.remove("hidden");
+    const hide = (n)=>el(n).classList.add("hidden");
+
+    // --- Init ---
+    window.addEventListener("load", () => {
+      loadBackgrounds();
+      checkSave();
+      bindEvents();
+    });
+
+    function bindEvents(){
+      el("btn-create").onclick = createChar;
+      el("btn-load").onclick = loadGame;
+      el("btn-load2").onclick = loadGame;
+      el("btn-save").onclick = saveGame;
+      el("btn-explore").onclick = explore;
+      el("btn-rest").onclick = rest;
+      el("btn-shop").onclick = toggleShop;
+      el("btn-attack").onclick = attack;
+      el("btn-flee").onclick = flee;
+    }
+
+    // --- Backgrounds ---
+    async function loadBackgrounds(){
+      try{
+        const res = await fetch("/get_backgrounds");
+        const data = await res.json();
+        bgMap = data.backgrounds || {};
+        const wrap = el("bg-grid");
+        wrap.innerHTML = "";
+        Object.entries(bgMap).forEach(([key,bg])=>{
+          const div = document.createElement("div");
+          div.className = "bg-card";
+          if(key===selectedBg) div.classList.add("active");
+          div.onclick = ()=> {
+            selectedBg = key;
+            document.querySelectorAll(".bg-card").forEach(x=>x.classList.remove("active"));
+            div.classList.add("active");
+          };
+          const stats = bg.stats||{hp:0,attack:0,gold:0,exp:0};
+          div.innerHTML = `
+            <div class="bg-name">${bg.name}</div>
+            <div class="bg-desc">${bg.description||""}</div>
+            <div class="bg-stats">生命+${stats.hp} 攻击+${stats.attack} 金币+${stats.gold} 经验+${stats.exp}</div>
+          `;
+          wrap.appendChild(div);
+        });
+      }catch(e){
+        addLog("【系统】出身数据加载失败。");
+      }
+    }
+
+    // --- Save check ---
+    async function checkSave(){
+      try{
+        const res = await fetch("/get_save_info");
+        const data = await res.json();
+        if(data.has_save){
+          const si = data.save_info;
+          el("save-brief").classList.remove("hidden");
+          el("save-brief").textContent = `发现存档：${si.name} Lv.${si.level} · ${si.age}岁 · ${new Date(si.timestamp).toLocaleString("zh-CN")}`;
+          el("btn-load").classList.remove("hidden");
         }
+      }catch(e){}
+    }
 
-        async function loadBackgrounds() {
-            try {
-                const response = await fetch('/get_backgrounds');
-                const data = await response.json();
-                backgrounds = data.backgrounds;
+    // --- Create Character ---
+    async function createChar(){
+      const name = el("ipt-name").value.trim();
+      const martial = el("sel-art").value;
+      if(!name) { alert("请先取一个名号。"); return; }
+      try{
+        const res = await fetch("/create_character",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ name, martial_art: martial, background: selectedBg })
+        });
+        const data = await res.json();
+        if(!data.success){ alert(data.error||"创建失败"); return; }
+        addLog(data.message);
+        hide("panel-create");
+        show("panel-game");
+        await refreshStatus();
+        gameState = "explore";
+      }catch(e){
+        alert("网络异常："+e.message);
+      }
+    }
 
-                const container = document.getElementById('background-options');
-                container.innerHTML = '';
+    // --- Refresh Status ---
+    async function refreshStatus(){
+      const r = await fetch("/game_status");
+      const d = await r.json();
+      if(d.error) throw Error(d.error);
+      const p = d.player, bg = d.background_info, wp = d.weapon_info;
 
-                Object.entries(backgrounds).forEach(([key, bg]) => {
-                    const card = document.createElement('div');
-                    card.className = 'background-card';
-                    card.setAttribute('data-background', key);
-                    if (key === selectedBackground) card.classList.add('selected');
-                    card.onclick = () => selectBackground(key);
+      el("pv-name").textContent = p.name;
+      el("pv-title").textContent = `${(bg.name||"未知出身")} · ${p.martial_art}`;
+      el("pv-lv").textContent = p.level;
+      el("pv-age").textContent = `${p.age}岁`;
+      el("pv-atk").textContent = p.attack;
+      el("pv-gold").textContent = p.gold;
+      el("pv-weapon").textContent = (wp && wp.name) ? wp.name : "-";
 
-                    const stats = bg.stats;
-                    const statsText = `生命+${stats.hp}, 攻击+${stats.attack}, 金币+${stats.gold}, 经验+${stats.exp}`;
+      el("pv-time").textContent = d.time_string;
 
-                    card.innerHTML = `
-                        <div class="background-name">${bg.name}</div>
-                        <div class="background-desc">${bg.description}</div>
-                        <div class="background-stats">${statsText}</div>
-                    `;
+      const hpPct = Math.max(0, Math.min(100, Math.round(p.hp / Math.max(1,p.max_hp) * 100)));
+      el("bar-hp").style.width = hpPct + "%";
+      el("pv-hp").textContent = `${p.hp}/${p.max_hp}`;
 
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                console.error('加载出身选项失败:', error);
-            }
+      const expPct = Math.max(0, Math.min(100, Math.round(p.exp / Math.max(1,p.exp_to_next) * 100)));
+      el("bar-exp").style.width = expPct + "%";
+      el("pv-exp").textContent = `${p.exp}/${p.exp_to_next}`;
+
+      return d;
+    }
+
+    // --- Log helper ---
+    function addLog(msg){
+      const box = el("log");
+      const p = document.createElement("p");
+      if(/\[.*\]/.test(msg)) p.innerHTML = msg; else p.textContent = msg;
+      box.appendChild(p);
+      while(box.children.length>60) box.removeChild(box.firstChild);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // --- Explore ---
+    async function explore(){
+      if(inBattle){ alert("正在战斗中！"); return; }
+      try{
+        const r = await fetch("/explore",{ method:"POST", headers:{ "Content-Type":"application/json" }});
+        const d = await r.json();
+        if(d.error){ alert(d.error); return; }
+        (d.messages||[]).forEach(addLog);
+        if(d.type==="enemy"){
+          inBattle = true;
+          el("enm-name").textContent = d.enemy.name;
+          el("enm-hp").textContent = d.enemy.hp;
+          el("enm-atk").textContent = d.enemy.attack;
+          show("enemy");
+        }else{
+          await refreshStatus();
         }
+      }catch(e){ alert("探索失败："+e.message); }
+    }
 
-        function selectBackground(backgroundKey) {
-            selectedBackground = backgroundKey;
-            document.querySelectorAll('.background-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            const selectedCard = document.querySelector(`[data-background="${backgroundKey}"]`);
-            if (selectedCard) {
-                selectedCard.classList.add('selected');
-            }
+    // --- Attack ---
+    async function attack(){
+      if(!inBattle) return;
+      try{
+        const r = await fetch("/battle",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ action:"attack" })
+        });
+        const d = await r.json();
+        if(d.error){ alert(d.error); return; }
+        (d.battle_log||[]).forEach(addLog);
+
+        if(d.victory || d.defeat){
+          inBattle = false;
+          hide("enemy");
+        }else if(d.continue){
+          el("enm-hp").textContent = d.enemy_hp;
         }
+        await refreshStatus();
+      }catch(e){ alert("出剑失败："+e.message); }
+    }
 
-        // 检查是否有存档
-        async function checkSavedGame() {
-            try {
-                const response = await fetch('/get_save_info');
-                const data = await response.json();
-
-                if (data.has_save) {
-                    const section = document.getElementById('load-game-section');
-                    const info = document.getElementById('save-info');
-
-                    // 显示存档列表
-                    let savesHtml = '';
-                    data.save_list.forEach((save, index) => {
-                        const saveTime = new Date(save.timestamp).toLocaleString('zh-CN');
-                        savesHtml += `
-                            <div class="save-item" style="margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
-                                <strong>存档 ${index + 1}:</strong> ${save.save_name}<br>
-                                <strong>角色:</strong> ${save.name}<br>
-                                <strong>等级:</strong> ${save.level} 级<br>
-                                <strong>年龄:</strong> ${save.age} 岁<br>
-                                <strong>保存时间:</strong> ${saveTime}
-                            </div>
-                        `;
-                    });
-
-                    info.innerHTML = savesHtml;
-                    section.classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('检查存档失败:', error);
-            }
+    // --- Flee ---
+    async function flee(){
+      if(!inBattle) return;
+      try{
+        const r = await fetch("/battle",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ action:"flee" })
+        });
+        const d = await r.json();
+        if(d.error){ alert(d.error); return; }
+        if(d.message) addLog(d.message);
+        if(d.fled){
+          inBattle = false;
+          hide("enemy");
+        }else if(typeof d.enemy_hp!=="undefined"){
+          el("enm-hp").textContent = d.enemy_hp;
         }
+        await refreshStatus();
+      }catch(e){ alert("脱身失败："+e.message); }
+    }
 
-        // 创建角色
-        async function createCharacter() {
-            const name = document.getElementById('character-name').value.trim();
-            const martialArt = document.getElementById('martial-art').value;
+    // --- Rest ---
+    async function rest(){
+      if(inBattle){ alert("战斗中不可歇脚！"); return; }
+      try{
+        const r = await fetch("/rest",{ method:"POST", headers:{ "Content-Type":"application/json" }});
+        const d = await r.json();
+        if(d.error){ alert(d.error); return; }
+        addLog(d.message);
+        await refreshStatus();
+      }catch(e){ alert("歇脚失败："+e.message); }
+    }
 
-            if (!name) {
-                alert('请输入角色姓名！');
-                return;
-            }
-
-            try {
-                const response = await fetch('/create_character', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        name: name,
-                        martial_art: martialArt,
-                        background: selectedBackground
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    addToLog(data.message);
-                    document.getElementById('character-creation').classList.add('hidden');
-                    document.getElementById('game-interface').classList.remove('hidden');
-                    updatePlayerStats();
-                    gameState = 'exploring';
-                } else {
-                    alert(data.error || '创建角色失败！');
-                }
-            } catch (error) {
-                alert('网络错误：' + error.message);
-            }
+    // --- Shop ---
+    async function toggleShop(){
+      const box = el("shop");
+      if(box.classList.contains("hidden")){
+        await loadShop();
+        show("shop");
+      }else{
+        hide("shop");
+      }
+    }
+    async function loadShop(){
+      try{
+        const r = await fetch("/shop");
+        const d = await r.json();
+        const wrap = el("shop-items");
+        wrap.innerHTML = "";
+        Object.entries(d.weapons||{}).forEach(([key,w])=>{
+          const price = (w.attack||0)*10;
+          const item = document.createElement("div");
+          item.className = "row";
+          item.style.borderTop = "1px dashed rgba(255,255,255,.08)";
+          item.style.padding = "10px 0";
+          item.innerHTML = `
+            <div style="flex:1">
+              <div style="color:#e9d9b6; font-weight:700; letter-spacing:.12em">${w.name}</div>
+              <div style="font-size:13px; color:#c9c3b6">${w.description||""}</div>
+              <div style="font-size:12px; color:#9ad0b5; margin-top:4px">攻击 +${w.attack} · 价格 ${price}</div>
+            </div>
+            <button class="btn btn--ghost" data-k="${key}">购 入</button>
+          `;
+          item.querySelector("button").onclick = ()=>buyWeapon(key);
+          wrap.appendChild(item);
+        });
+      }catch(e){ addLog("兵器铺打烊了……"); }
+    }
+    async function buyWeapon(weaponKey){
+      try{
+        const r = await fetch("/buy_weapon",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ weapon: weaponKey })
+        });
+        const d = await r.json();
+        if(d.success){
+          addLog(d.message);
+          await refreshStatus();
+          await loadShop();
+        }else{
+          alert(d.error||"购买失败");
         }
-
-        // 更新玩家状态显示
-        async function updatePlayerStats() {
-            try {
-                const response = await fetch('/game_status');
-                const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                const player = data.player;
-                const bgInfo = data.background_info;
-
-                // 基本信息
-                document.getElementById('player-name').textContent = player.name;
-                document.getElementById('player-title').textContent = `${bgInfo.name || '未知出身'} · ${player.martial_art}`;
-                document.getElementById('player-level').textContent = player.level;
-                document.getElementById('player-age').textContent = `${player.age}岁`;
-                document.getElementById('player-attack').textContent = player.attack;
-                document.getElementById('player-gold').textContent = player.gold;
-
-                // 生命值
-                document.getElementById('hp-text').textContent = `${player.hp}/${player.max_hp}`;
-                const hpPercentage = (player.hp / player.max_hp) * 100;
-                document.getElementById('hp-bar').style.width = hpPercentage + '%';
-
-                // 经验值
-                document.getElementById('exp-text').textContent = `${player.exp}/${player.exp_to_next}`;
-                const expPercentage = (player.exp / player.exp_to_next) * 100;
-                document.getElementById('exp-bar').style.width = expPercentage + '%';
-
-                // 武器
-                if (data.weapon_info) {
-                    document.getElementById('player-weapon').textContent = data.weapon_info.name;
-                }
-
-                // 时间信息
-                document.getElementById('game-time').textContent = data.time_string;
-
-                // 年龄描述
-                const ageDesc = getAgeDescription(player.age);
-                document.getElementById('age-description').textContent = ageDesc;
-
-                return data;
-            } catch (error) {
-                console.log('更新状态失败:', error.message);
-                throw error;
-            }
-        }
-
-        // 获取年龄描述
-        function getAgeDescription(age) {
-            if (age <= 20) return "年少有为，前途无量";
-            else if (age <= 30) return "正值壮年，实力渐长";
-            else if (age <= 45) return "经验丰富，武艺精湛";
-            else if (age <= 60) return "德高望重，武林前辈";
-            else return "宗师级人物，武学大成";
-        }
-
-        // 探索
-        async function explore() {
-            if (gameState === 'battle') {
-                alert('你正在战斗中！');
-                return;
-            }
-
-            try {
-                const response = await fetch('/explore', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                // 添加所有消息到日志
-                if (data.messages) {
-                    data.messages.forEach(message => addToLog(message));
-                }
-
-                if (data.type === 'enemy') {
-                    // 进入战斗
-                    currentEnemy = data.enemy;
-                    gameState = 'battle';
-                    showEnemyPanel(data.enemy);
-                } else {
-                    updatePlayerStats();
-                }
-            } catch (error) {
-                alert('探索失败：' + error.message);
-            }
-        }
-
-        // 显示敌人面板
-        function showEnemyPanel(enemy) {
-            document.getElementById('enemy-name').textContent = enemy.name;
-            document.getElementById('enemy-hp').textContent = enemy.hp;
-            document.getElementById('enemy-attack').textContent = enemy.attack;
-            document.getElementById('enemy-panel').classList.remove('hidden');
-        }
-
-        // 隐藏敌人面板
-        function hideEnemyPanel() {
-            document.getElementById('enemy-panel').classList.add('hidden');
-        }
-
-        // 攻击
-        async function attack() {
-            if (gameState !== 'battle') return;
-
-            try {
-                const response = await fetch('/battle', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'attack'
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                // 显示战斗日志
-                data.battle_log.forEach(log => addToLog(log));
-
-                if (data.victory) {
-                    // 胜利
-                    gameState = 'exploring';
-                    hideEnemyPanel();
-                    currentEnemy = null;
-
-                    // 升级动画效果
-                    if (data.battle_log.some(log => log.includes('升级'))) {
-                        document.querySelector('.player-stats').classList.add('level-up');
-                        setTimeout(() => {
-                            document.querySelector('.player-stats').classList.remove('level-up');
-                        }, 2000);
-                    }
-                } else if (data.defeat) {
-                    // 失败
-                    gameState = 'exploring';
-                    hideEnemyPanel();
-                    currentEnemy = null;
-
-                    // 伤害动画效果
-                    document.querySelector('.player-stats').classList.add('damage-animation');
-                    setTimeout(() => {
-                        document.querySelector('.player-stats').classList.remove('damage-animation');
-                    }, 500);
-                } else if (data.continue) {
-                    // 战斗继续
-                    document.getElementById('enemy-hp').textContent = data.enemy_hp;
-
-                    // 伤害动画效果
-                    document.getElementById('enemy-panel').classList.add('damage-animation');
-                    setTimeout(() => {
-                        document.getElementById('enemy-panel').classList.remove('damage-animation');
-                    }, 500);
-                }
-
-                updatePlayerStats();
-            } catch (error) {
-                alert('攻击失败：' + error.message);
-            }
-        }
-
-        // 逃跑
-        async function flee() {
-            if (gameState !== 'battle') return;
-
-            try {
-                const response = await fetch('/battle', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'flee'
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                // 显示战斗日志
-                if (data.battle_log && data.battle_log.length > 0) {
-                    data.battle_log.forEach(log => addToLog(log));
-                }
-
-                if (data.fled) {
-                    gameState = 'exploring';
-                    hideEnemyPanel();
-                    currentEnemy = null;
-                }
-
-                updatePlayerStats();
-            } catch (error) {
-                alert('逃跑失败：' + error.message);
-            }
-        }
-
-        // 休息
-        async function rest() {
-            if (gameState === 'battle') {
-                alert('战斗中无法休息！');
-                return;
-            }
-
-            try {
-                const response = await fetch('/rest', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                addToLog(data.message);
-                updatePlayerStats();
-            } catch (error) {
-                alert('休息失败：' + error.message);
-            }
-        }
-
-        // 切换商店显示
-        async function toggleShop() {
-            if (gameState === 'battle') {
-                alert('战斗中无法进入商店！');
-                return;
-            }
-
-            const shopPanel = document.getElementById('shop-panel');
-
-            if (shopPanel.classList.contains('hidden')) {
-                await loadShop();
-                shopPanel.classList.remove('hidden');
-                gameState = 'shop';
-            } else {
-                shopPanel.classList.add('hidden');
-                gameState = 'exploring';
-            }
-        }
-
-        // 加载商店
-        async function loadShop() {
-            try {
-                const response = await fetch('/shop');
-                const data = await response.json();
-
-                const shopItems = document.getElementById('shop-items');
-                shopItems.innerHTML = '';
-
-                Object.entries(data.weapons).forEach(([key, weapon]) => {
-                    const price = weapon.attack * 10;
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'shop-item';
-                    itemDiv.innerHTML = `
-                        <div class="weapon-info">
-                            <div class="weapon-name">${weapon.name}</div>
-                            <div class="weapon-desc">${weapon.description}</div>
-                            <div class="weapon-stats">
-                                <span class="weapon-attack">攻击力: +${weapon.attack}</span>
-                                <span class="weapon-price">价格: ${price} 金币</span>
-                            </div>
-                        </div>
-                        <button class="btn" onclick="buyWeapon('${key}')">购买</button>
-                    `;
-                    shopItems.appendChild(itemDiv);
-                });
-            } catch (error) {
-                alert('加载商店失败：' + error.message);
-            }
-        }
-
-        // 购买武器
-        async function buyWeapon(weaponKey) {
-            try {
-                const response = await fetch('/buy_weapon', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        weapon: weaponKey
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    addToLog(data.message);
-                    updatePlayerStats();
-                    loadShop(); // 刷新商店显示
-                } else {
-                    alert(data.error);
-                }
-            } catch (error) {
-                alert('购买失败：' + error.message);
-            }
-        }
-
-        // 保存游戏
-        async function saveGame() {
-            try {
-                const response = await fetch('/save_game', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                const saveTime = new Date(data.save_time).toLocaleString('zh-CN');
-                addToLog(`[系统] ${data.message} 保存时间: ${saveTime}`);
-                alert('游戏保存成功！');
-            } catch (error) {
-                alert('保存失败：' + error.message);
-            }
-        }
-
-        // 读取游戏
-        async function loadGame() {
-            try {
-                const response = await fetch('/load_game', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                addToLog(`[系统] ${data.message}`);
-
-                // 切换到游戏界面
-                document.getElementById('character-creation').classList.add('hidden');
-                document.getElementById('game-interface').classList.remove('hidden');
-
-                // 更新玩家状态
-                await updatePlayerStats();
-                gameState = 'exploring';
-
-                alert('游戏读取成功！');
-            } catch (error) {
-                alert('读取失败：' + error.message);
-            }
-        }
-
-        // 添加日志
-        function addToLog(message) {
-            const gameLog = document.getElementById('game-log');
-            const logEntry = document.createElement('div');
-            logEntry.className = 'log-entry';
-
-            // 检查消息是否已经包含时间戳
-            if (message.includes('[') && message.includes(']')) {
-                logEntry.innerHTML = message;
-            } else {
-                logEntry.textContent = message;
-            }
-
-            gameLog.appendChild(logEntry);
-
-            // 保持日志数量不超过50条
-            while (gameLog.children.length > 50) {
-                gameLog.removeChild(gameLog.firstChild);
-            }
-
-            // 滚动到底部
-            gameLog.scrollTop = gameLog.scrollHeight;
-        }
-    </script>
+      }catch(e){ alert("购买失败："+e.message); }
+    }
+
+    // --- Save / Load ---
+    async function saveGame(){
+      try{
+        const r = await fetch("/save_game",{ method:"POST", headers:{ "Content-Type":"application/json" }});
+        const d = await r.json();
+        if(d.error){ alert(d.error); return; }
+        addLog(`【系统】${d.message} · ${new Date(d.save_time).toLocaleString("zh-CN")}`);
+        alert("已保存。");
+      }catch(e){ alert("保存失败："+e.message); }
+    }
+    async function loadGame(){
+      try{
+        const r = await fetch("/load_game",{ method:"POST", headers:{ "Content-Type":"application/json" }});
+        const d = await r.json();
+        if(d.error){ alert(d.error); return; }
+        addLog(`【系统】${d.message}`);
+        hide("panel-create"); show("panel-game");
+        await refreshStatus();
+        gameState="explore";
+        alert("读取成功。");
+      }catch(e){ alert("读取失败："+e.message); }
+    }
+  </script>
 </body>
 </html>
